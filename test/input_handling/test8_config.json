@@ -1,0 +1,14 @@
+{
+    "create_new_indices":[],
+    "create_old_indices":[],
+    "create_old_aliases":{},
+    "input_config":{
+        "abort_run":"False",
+        "alias_name":"customer-test",
+        "data_source":"customer",
+        "delete_old":"True",
+        "forcemerge_new":"True",
+        "index_base":"customer-2_0_0",
+        "new_replicas":"one"
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "create_new_indices":[
+        "resolver-customer-2_0_0-2022-01-10_10-25-57-089-account",
+        "resolver-customer-2_0_0-2022-01-10_10-25-57-089-address",
+        "resolver-customer-2_0_0-2022-01-10_10-25-57-089-business",
+        "resolver-customer-2_0_0-2022-01-10_10-25-57-089-doc2rec",
+        "resolver-customer-2_0_0-2022-01-10_10-25-57-089-email",
+        "resolver-customer-2_0_0-2022-01-10_10-25-57-089-individual",
+        "resolver-customer-2_0_0-2022-01-10_10-25-57-089-telephone",
+        "search-customer-2_0_0-2022-01-10_10-25-57-089"
+    ],
+    "create_old_indices":[],
+    "create_old_aliases":{},
+    "input_config":{
+        "abort_run":"False",
+        "alias_name":"customer-test",
+        "data_source":"customer",
+        "delete_old":"True",
+        "forcemerge_new":"True",
+        "index_base":"customer-2_0_0",
+        "new_replicas":"2"
+    }
+}
