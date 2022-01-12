@@ -7,7 +7,6 @@ from elasticsearch import Elasticsearch
 class TestUtils(object):
     def __init__(self):
         self.es_utils = EsUtils()
-        self.es = Elasticsearch()
 
     def setup(self, test_config):
         for index in test_config['create_old_indices']:
@@ -29,7 +28,7 @@ class TestUtils(object):
             self.es_utils.delete_index(index)
 
     def get_segment_counts(self, index):
-        shards = self.es.indices.segments(index)['indices'][index]['shards'].keys()
-        counts = {shard: len(self.es.indices.segments(index)['indices'][index]['shards'][shard][0]['segments'])
+        shards = self.es_utils.es.indices.segments(index)['indices'][index]['shards'].keys()
+        counts = {shard: len(self.es_utils.es.indices.segments(index)['indices'][index]['shards'][shard][0]['segments'])
                   for shard in shards}
         return counts

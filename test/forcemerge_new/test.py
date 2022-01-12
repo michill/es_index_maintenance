@@ -9,7 +9,6 @@ from elasticsearch import Elasticsearch
 """
 class Test(unittest.TestCase):
     def setUp(self):
-        self.es = Elasticsearch()
         self.es_utils = EsUtils()
         self.test_utils = TestUtils()
         self.directory = os.path.dirname(os.path.abspath(__file__))
@@ -30,7 +29,7 @@ class Test(unittest.TestCase):
                 bulk_request += f'{{ "index" : {{ "_index" : "{index}" }} }}\n'
                 bulk_request += f'{{ "{i}" : "{i}" }}\n'
 
-            self.es.bulk(index=index, doc_type='test', body=bulk_request)
+            self.es_utils.es.bulk(index=index, doc_type='test', body=bulk_request)
 
         run_test(json.dumps(test_config['input_config']))
         results = []
@@ -62,7 +61,7 @@ class Test(unittest.TestCase):
                 bulk_request += f'{{ "index" : {{ "_index" : "{index}" }} }}\n'
                 bulk_request += f'{{ "{i}" : "{i}" }}\n'
 
-            self.es.bulk(index=index, doc_type='test', body=bulk_request)
+            self.es_utils.es.bulk(index=index, doc_type='test', body=bulk_request)
 
         run_test(json.dumps(test_config['input_config']))
         results = []

@@ -49,6 +49,22 @@ class MainUtils(object):
         run_id_format = "%Y-%m-%d_%H-%M-%S-%f"
         return time.mktime(datetime.datetime.strptime(run_id, run_id_format).timetuple())
 
+    # Performs validation on the alias mappings to ensure the old set of indices associated with
+    # an alias do not match the new set. Under these conditions, if delete_old were set to True,
+    # the indices associated with the alias will be deleted and the job will not be idempotent
+    @staticmethod
+    def validate_alias_mappings(old_alias_mappings, new_alias_mappings):
+        old_indices = []
+
+        for index_list in old_alias_mappings.values():
+            old_indices += index_list
+
+        if any(index in old_indices for index in new_alias_mappings.values()):
+            print(f"The latest indices are already associated with the input alias\n"
+                  f"New indices: {new_alias_mappings.values()}\n"
+                  f"Old indices: {old_alias_mappings.values()}")
+            raise Exception(f"Latest indices already associated with alias")
+
     # Performs validation on the set of indices determined as being the latest based on their
     # runId. Throws an exception if there are different runId values among these indices
     def validate_run_ids(self, indices):

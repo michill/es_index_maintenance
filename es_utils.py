@@ -1,3 +1,4 @@
+import json, os
 from elasticsearch import Elasticsearch
 
 
@@ -6,7 +7,18 @@ from elasticsearch import Elasticsearch
 """
 class EsUtils(object):
     def __init__(self):
-        self.es = Elasticsearch()
+        directory = os.path.dirname(os.path.abspath(__file__))
+
+        with open(f'{directory}/config.json') as config_file:
+            file_config = json.load(config_file)
+
+        hosts = file_config['es_urls_dev']
+        ca_certs = file_config['ca_certs']
+
+        if ca_certs:
+            self.es = Elasticsearch(hosts=hosts, ca_certs=ca_certs)
+        else:
+            self.es = Elasticsearch(hosts=hosts)
 
     # Creates an index with the specified name, ignoring errors if it already exists
     def create_index(self, index):

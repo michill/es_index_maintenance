@@ -9,7 +9,6 @@ from elasticsearch import Elasticsearch
 """
 class Test(unittest.TestCase):
     def setUp(self):
-        self.es = Elasticsearch()
         self.es_utils = EsUtils()
         self.test_utils = TestUtils()
         self.directory = os.path.dirname(os.path.abspath(__file__))
@@ -23,7 +22,7 @@ class Test(unittest.TestCase):
         self.test_utils.setup(test_config)
         run_test(json.dumps(test_config['input_config']))
 
-        zero_replica_indices = [self.es.indices.get_settings(index)[index]['settings']['index']['number_of_replicas'] == "0"
+        zero_replica_indices = [self.es_utils.es.indices.get_settings(index)[index]['settings']['index']['number_of_replicas'] == "0"
                                 for index in test_config['create_new_indices']]
 
         self.assertTrue(all(zero_replica_indices))
@@ -37,7 +36,7 @@ class Test(unittest.TestCase):
         self.test_utils.setup(test_config)
         run_test(json.dumps(test_config['input_config']))
 
-        one_replica_indices = [self.es.indices.get_settings(index)[index]['settings']['index']['number_of_replicas'] == "1"
+        one_replica_indices = [self.es_utils.es.indices.get_settings(index)[index]['settings']['index']['number_of_replicas'] == "1"
                                 for index in test_config['create_new_indices']]
 
         self.assertTrue(all(one_replica_indices))
@@ -51,7 +50,7 @@ class Test(unittest.TestCase):
         self.test_utils.setup(test_config)
         run_test(json.dumps(test_config['input_config']))
 
-        two_replica_indices = [self.es.indices.get_settings(index)[index]['settings']['index']['number_of_replicas'] == "2"
+        two_replica_indices = [self.es_utils.es.indices.get_settings(index)[index]['settings']['index']['number_of_replicas'] == "2"
                                 for index in test_config['create_new_indices']]
 
         self.assertTrue(all(two_replica_indices))

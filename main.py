@@ -26,6 +26,7 @@ def main(args):
     new_alias_mappings = {alias: main_utils.get_latest_index(input_config['index_base'], entity)
                           for (entity, alias) in all_index_aliases.items()}
 
+    main_utils.validate_alias_mappings(old_alias_mappings, new_alias_mappings)
     main_utils.validate_run_ids(new_alias_mappings.values())
 
     # Adds new indices to aliases

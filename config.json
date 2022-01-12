@@ -1,7 +1,8 @@
 {
-    "es_url_dev":"https://abc.com",
-    "es_url_ppte":"https://def.com",
-    "es_url_prod":"https://ghi.com",
+    "ca_certs":"",
+    "es_urls_dev":["http://localhost:9200"],
+    "es_urls_ppte":["http://localhost:9200"],
+    "es_urls_prod":["http://localhost:9200"],
     "data_sources":[
         "bvd",
         "customer",

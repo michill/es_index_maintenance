@@ -19,9 +19,6 @@ input config (formatted)
 Tests Remaining:
 
 - main_utils (functions)
-  - get_latest_index (exception from no hits, multiple runIds)
-  - get_latest_run_id_index (input list of indices)
-  - get_run_id (varying length millisecond, exception)
   - run_id_to_timestamp (validate order of timestamps)
   - validate_run_ids
 - main_utils (scenarios)
