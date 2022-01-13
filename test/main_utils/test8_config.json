@@ -25,6 +25,7 @@
         "alias_name":"customer-test",
         "data_source":"customer",
         "delete_old":"True",
+        "env":"dev",
         "forcemerge_new":"True",
         "index_base":"customer-1_0_0",
         "new_replicas":"1"

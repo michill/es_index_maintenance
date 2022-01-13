@@ -6,14 +6,17 @@ from elasticsearch import Elasticsearch
     Contains helper functions used to interface with an Elasticsearch cluster
 """
 class EsUtils(object):
-    def __init__(self):
+    def __init__(self, env='dev'):
+        self.env = env
         directory = os.path.dirname(os.path.abspath(__file__))
 
         with open(f'{directory}/config.json') as config_file:
             file_config = json.load(config_file)
 
-        hosts = file_config['es_urls_dev']
         ca_certs = file_config['ca_certs']
+
+        hosts_parameter = f'es_urls_{self.env}'
+        hosts = file_config[hosts_parameter]
 
         if ca_certs:
             self.es = Elasticsearch(hosts=hosts, ca_certs=ca_certs)

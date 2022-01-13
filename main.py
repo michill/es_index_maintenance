@@ -3,15 +3,16 @@ from es_utils import EsUtils
 from main_utils import MainUtils
 
 def main(args):
-    es_utils = EsUtils()
-    main_utils = MainUtils()
     directory = os.path.dirname(os.path.abspath(__file__))
 
     with open(f'{directory}/config.json') as config_file:
         file_config = json.load(config_file)
 
     input_config = json.loads(args)
-    main_utils.validate_input(input_config, file_config)
+    MainUtils.validate_input(input_config, file_config)
+
+    es_utils = EsUtils(input_config['env'])
+    main_utils = MainUtils(input_config['env'])
 
     if eval(input_config['abort_run']):
         print("Aborting run as abort_run parameter was set to True")
@@ -55,4 +56,4 @@ def main(args):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1:])

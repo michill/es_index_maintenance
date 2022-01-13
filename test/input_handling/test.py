@@ -80,6 +80,14 @@ class Test(unittest.TestCase):
         with self.assertRaisesRegex(Exception, "Invalid new_replicas value"):
             run_test(json.dumps(test9_config['input_config']))
 
+    # env = invalid
+    def test10_input_handling(self):
+        with open(f'{self.directory}/test10_config.json') as config_file:
+            test10_config = json.load(config_file)
+
+        with self.assertRaisesRegex(Exception, "Invalid env value"):
+            run_test(json.dumps(test10_config['input_config']))
+
 
 if __name__ == "__main__":
     unittest.main()

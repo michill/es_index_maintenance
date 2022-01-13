@@ -5,8 +5,8 @@ from es_utils import EsUtils
     Contains helper functions used to run the index maintenance commands
 """
 class MainUtils(object):
-    def __init__(self):
-        self.es_utils = EsUtils()
+    def __init__(self, env='dev'):
+        self.es_utils = EsUtils(env)
 
     # Returns the index with the latest runId value of all indices with a specified base. Raises
     # an exception if no indices are returned from the constructed query
@@ -105,3 +105,8 @@ class MainUtils(object):
             print(f"Input new_replicas value: '{input_config['new_replicas']}'. "
                   f"Accepted values: {{'0', '1', '2', ...}}")
             raise Exception("Invalid new_replicas value")
+
+        if input_config['env'] not in ['dev', 'ppte', 'prod']:
+            print(f"Input env value: '{input_config['env']}'. "
+                  f"Accepted values: [\'dev\', \'ppte\', \'prod\'")
+            raise Exception("Invalid env value")

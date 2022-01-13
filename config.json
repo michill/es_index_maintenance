@@ -2,7 +2,7 @@
     "ca_certs":"",
     "es_urls_dev":["http://localhost:9200"],
     "es_urls_ppte":["http://localhost:9200"],
-    "es_urls_prod":["http://localhost:9200"],
+    "es_urls_prod":["http://invalid:9200"],
     "data_sources":[
         "bvd",
         "customer",
@@ -15,6 +15,7 @@
         "alias_name",
         "data_source",
         "delete_old",
+        "env",
         "forcemerge_new",
         "index_base",
         "new_replicas"
