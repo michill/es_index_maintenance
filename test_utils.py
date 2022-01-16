@@ -1,5 +1,6 @@
 from es_utils import EsUtils
-from elasticsearch import Elasticsearch
+from elasticsearch import helpers
+import string, random
 
 """
     Contains helper functions for use in tests
@@ -32,3 +33,17 @@ class TestUtils(object):
         counts = {shard: len(self.es_utils.es.indices.segments(index)['indices'][index]['shards'][shard][0]['segments'])
                   for shard in shards}
         return counts
+
+    def insert_bulk_data(self, index, num_docs):
+        documents = [
+            {
+                "_index": index,
+                "_type": "doc",
+                "_id": i,
+                "_source": {
+                    "text": ''.join(random.choice(string.ascii_lowercase) for _ in range(100))
+                }
+            }
+            for i in range(num_docs)
+        ]
+        helpers.bulk(self.es_utils.es, documents)

@@ -1,6 +1,7 @@
-import json, os
+import json, os, socket
 from elasticsearch import Elasticsearch
-
+from urllib3.exceptions import ReadTimeoutError
+from elasticsearch.exceptions import ConnectionTimeout
 
 """
     Contains helper functions used to interface with an Elasticsearch cluster
@@ -66,11 +67,14 @@ class EsUtils(object):
         else:
             return []
 
-    # Applies the "forcemerge" operation to the input index
+    # Applies the "forcemerge" operation to the input index. Ignores exceptions related to
+    # hitting a 10 second timeout from this synchronous operation
     def forcemerge_index(self, index, max_num_segments):
         print(f"Applying forcemerge to index: {index}")
-        self.es.indices.forcemerge(index=index,
-                                   max_num_segments=max_num_segments)
+        try:
+            self.es.indices.forcemerge(index=index, max_num_segments=max_num_segments)
+        except (socket.timeout, ReadTimeoutError, ConnectionTimeout):
+            pass
 
     # Modifies the number of replicas for the input index
     def set_index_replicas(self, index, replicas):

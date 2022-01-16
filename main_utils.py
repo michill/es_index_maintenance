@@ -34,7 +34,7 @@ class MainUtils(object):
     # input index has no matches for the runId pattern
     @staticmethod
     def get_run_id(index):
-        run_id_pattern = '(\d){4}-(\d){2}-(\d){2}_(\d){2}-(\d){2}-(\d){2}-(\d){0,3}'
+        run_id_pattern = '(\d){4}-(\d){2}-(\d){2}_(\d){2}-(\d){2}-(\d){2}-(\d){1,3}'
         match = re.search(run_id_pattern, index)
 
         if match:

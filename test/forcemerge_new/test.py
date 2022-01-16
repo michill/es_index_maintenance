@@ -1,8 +1,9 @@
-import json, unittest, warnings, os
+import json, unittest, warnings, os, socket
 from main import main as run_test
 from es_utils import EsUtils
 from test_utils import TestUtils
-from elasticsearch import Elasticsearch
+from urllib3.exceptions import ReadTimeoutError
+from elasticsearch.exceptions import ConnectionTimeout
 
 """
     Tests whether the input parameter "forcemerge_new" is functioning as intended
@@ -19,17 +20,11 @@ class Test(unittest.TestCase):
         with open(f'{self.directory}/test1_config.json') as config_file:
             test_config = json.load(config_file)
 
-        self.test_utils.cleanup(test_config)
         self.test_utils.setup(test_config)
 
         # Adds data to each new index to increase the segment counts
         for index in test_config['create_new_indices']:
-            bulk_request = ""
-            for i in range(500):
-                bulk_request += f'{{ "index" : {{ "_index" : "{index}" }} }}\n'
-                bulk_request += f'{{ "{i}" : "{i}" }}\n'
-
-            self.es_utils.es.bulk(index=index, doc_type='test', body=bulk_request)
+            self.test_utils.insert_bulk_data(index, 25000)
 
         run_test(json.dumps(test_config['input_config']))
         results = []
@@ -51,17 +46,11 @@ class Test(unittest.TestCase):
         with open(f'{self.directory}/test2_config.json') as config_file:
             test_config = json.load(config_file)
 
-        self.test_utils.cleanup(test_config)
         self.test_utils.setup(test_config)
 
         # Adds data to each new index to increase the segment counts
         for index in test_config['create_new_indices']:
-            bulk_request = ""
-            for i in range(500):
-                bulk_request += f'{{ "index" : {{ "_index" : "{index}" }} }}\n'
-                bulk_request += f'{{ "{i}" : "{i}" }}\n'
-
-            self.es_utils.es.bulk(index=index, doc_type='test', body=bulk_request)
+            self.test_utils.insert_bulk_data(index, 25000)
 
         run_test(json.dumps(test_config['input_config']))
         results = []
@@ -75,8 +64,28 @@ class Test(unittest.TestCase):
                   f'shard_segment_counts_gt_one: {shard_segment_counts_gt_one}')
             results.append(any(shard_segment_counts_gt_one))
 
-        self.assertTrue(all(results))
+        self.assertTrue(any(results))
         self.test_utils.cleanup(test_config)
+
+    # Exceed timeout threshold (default of 10 seconds) when applying forcemerge to an index
+    # with 2,500,000 documents with the exception handling logic in place
+    def test3_forcemerge_new(self):
+        self.es_utils.create_index("test-index")
+        self.test_utils.insert_bulk_data("test-index", 2500000)
+        self.es_utils.forcemerge_index(index="test-index", max_num_segments=1)
+        assert(True)
+        self.es_utils.delete_index("test-index")
+
+    # Exceed timeout threshold (default of 10 seconds) when applying forcemerge to an index
+    # with 2,500,000 documents without exception handling logic in place
+    def test4_forcemerge_new(self):
+        self.es_utils.create_index("test-index")
+        self.test_utils.insert_bulk_data("test-index", 2500000)
+
+        with self.assertRaises((socket.timeout, ReadTimeoutError, ConnectionTimeout)):
+            self.es_utils.es.indices.forcemerge(index="test-index", max_num_segments=1)
+
+        self.es_utils.delete_index("test-index")
 
 
 if __name__ == "__main__":
