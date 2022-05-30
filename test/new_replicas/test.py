@@ -2,7 +2,6 @@ import json, unittest, warnings, os
 from main import main as run_test
 from es_utils import EsUtils
 from test_utils import TestUtils
-from elasticsearch import Elasticsearch
 
 """
     Tests whether the input parameter "delete_old" is functioning as intended

@@ -1,10 +1,10 @@
 import json, os, socket
-from elasticsearch import Elasticsearch
+from opensearchpy import OpenSearch
 from urllib3.exceptions import ReadTimeoutError
-from elasticsearch.exceptions import ConnectionTimeout
+from opensearchpy.exceptions import ConnectionTimeout, TransportError
 
 """
-    Contains helper functions used to interface with an Elasticsearch cluster
+    Contains helper functions used to interface with an Opensearch cluster
 """
 class EsUtils(object):
     def __init__(self, env='dev'):
@@ -20,9 +20,9 @@ class EsUtils(object):
         hosts = file_config[hosts_parameter]
 
         if ca_certs:
-            self.es = Elasticsearch(hosts=hosts, ca_certs=ca_certs)
+            self.es = OpenSearch(hosts=hosts, timeout=1, ca_certs=ca_certs)
         else:
-            self.es = Elasticsearch(hosts=hosts)
+            self.es = OpenSearch(hosts=hosts, timeout=1)
 
     # Creates an index with the specified name, ignoring errors if it already exists
     def create_index(self, index):
@@ -73,7 +73,8 @@ class EsUtils(object):
         print(f"Applying forcemerge to index: {index}")
         try:
             self.es.indices.forcemerge(index=index, max_num_segments=max_num_segments)
-        except (socket.timeout, ReadTimeoutError, ConnectionTimeout):
+        except (socket.timeout, ReadTimeoutError, ConnectionTimeout, TransportError) as e:
+            print(f"Exception: {e} hit for index: {index}")
             pass
 
     # Modifies the number of replicas for the input index

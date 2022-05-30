@@ -1,5 +1,5 @@
 import unittest, warnings
-from elasticsearch import Elasticsearch
+import time
 from es_utils import EsUtils
 from test_utils import TestUtils
 
@@ -29,12 +29,7 @@ class Test(unittest.TestCase):
 
     # forcemerge_index (ensure segment count > 1 prior to running forcemerge)
     def test4_es_utils(self):
-        bulk_request = ""
-        for i in range(500):
-            bulk_request += '{ "index" : { "_index" : "test" } }\n'
-            bulk_request += f'{{ "{i}" : "{i}" }}\n'
-
-        self.es_utils.es.bulk(index='test', doc_type='test', body=bulk_request)
+        self.test_utils.insert_bulk_data("test", 100000)
         shard_segment_counts = self.test_utils.get_segment_counts("test").values()
         shard_segment_counts_gt_one = [int(count) > 1 for count in shard_segment_counts]
         print(f"shard_segment_counts: {shard_segment_counts}, "
@@ -44,6 +39,7 @@ class Test(unittest.TestCase):
     # forcemerge_index
     def test5_es_utils(self):
         self.es_utils.forcemerge_index("test", 1)
+        time.sleep(5)
         shard_segment_counts = self.test_utils.get_segment_counts("test").values()
         shard_segment_counts_equal_one = [int(count) == 1 for count in shard_segment_counts]
         print(f"shard_segment_counts: {shard_segment_counts}, "

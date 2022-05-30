@@ -1,5 +1,5 @@
 from es_utils import EsUtils
-from elasticsearch import helpers
+from opensearchpy import helpers
 import string, random
 
 """
